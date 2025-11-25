@@ -1,0 +1,72 @@
+{
+  "name": "back1",
+  "version": "0.0.1",
+  "main": "dist/main.js",
+  "types": "dist/main.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/main.d.ts",
+      "default": "./dist/main.js"
+    },
+    "./dist_tool_v1_api/api_v1": {
+      "types": "./dist/dist_tool_v1_api/api_v1.d.ts",
+      "default": "./dist/dist_tool_v1_api/api_v1.js"
+    },
+    "./dist_tool_v1_api/*": {
+      "types": "./dist/dist_tool_v1_api/*.d.ts",
+      "default": "./dist/dist_tool_v1_api/*.js"
+    }
+  },
+  "scripts": {
+    "make": "pnpm i && pnpm v1",
+    "dev": "nest start --watch",
+    "prod": "node dist/main",
+    "build": "nest build",
+    "generate": "prisma generate  --schema=./src/orm_prisma   --config=./src/orm_prisma/config.ts",
+    "push": "    prisma db push   --schema=./src/orm_prisma   --config=./src/orm_prisma/config.ts",
+    "studio": "  prisma studio    --schema=./src/orm_prisma   --config=./src/orm_prisma/config.ts",
+    "drizzle:generate": "drizzle-kit generate   --config=./src/orm_drizzle/db_config.ts",
+    "drizzle:migrate": " drizzle-kit migrate    --config=./src/orm_drizzle/db_config.ts",
+    "drizzle:studio": "  drizzle-kit studio     --config=./src/orm_drizzle/db_config.ts",
+    "format": "prettier --write \"src/**/*.ts\""
+  },
+  "dependencies": {
+    "@anatine/zod-nestjs": "^2.0.12",
+    "@nestjs/common": "^11.0.1",
+    "@nestjs/core": "^11.0.1",
+    "@nestjs/jwt": "^11.0.1",
+    "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/swagger": "^11.2.3",
+    "@prisma/adapter-pg": "^7.0.0",
+    "@prisma/client": "^7.0.0",
+    "axios": "^1.13.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "dayjs": "^1.11.19",
+    "drizzle-orm": "^0.44.7",
+    "lodash": "^4.17.21",
+    "nest-knife4j": "^1.0.1",
+    "pg": "^8.16.3",
+    "postgres": "^3.4.7",
+    "prisma": "^7.0.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "uuid": "^13.0.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@mikro-orm/cli": "^6.6.0",
+    "@nestjs/cli": "^11.0.0",
+    "@nestjs/schematics": "^11.0.0",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.7",
+    "@types/pg": "^8.15.6",
+    "drizzle-kit": "^0.31.6",
+    "prettier": "^3.4.2",
+    "source-map-support": "^0.5.21",
+    "ts-loader": "^9.5.2",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.7.3"
+  }
+}
