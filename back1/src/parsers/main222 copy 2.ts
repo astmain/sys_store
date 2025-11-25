@@ -1,7 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import * as ts from 'typescript'
-
 main()
 function main() {
   const path_file = 'D:/BBB/sys_store/back1/src/v1/auth/dto/login_phone.ts'
@@ -34,7 +33,6 @@ function main() {
 
   const program = ts.createProgram(allFiles, compilerOptions, host)
 
-
   // 获取目标源文件的 AST（抽象语法树）
   const sourceFile = program.getSourceFile(path_file)
   if (!sourceFile) return
@@ -53,23 +51,11 @@ function main() {
 
 
 
-
-
-
-
-
     node.members?.forEach((member) => {
       if (ts.isPropertyDeclaration(member) && member.name && ts.isIdentifier(member.name)) {
-        const key = member.name.getText() // 获取属性名
-        const type = checker.getTypeAtLocation(member) // 获取属性类型
-        console.log('key---', key)
-        console.log('type---',type.getBaseTypes())
-        // console.log('type---', checker.typeToString(type))
-
-
-
-
-
+        const name_property = member.name.text
+        const name_class = node.name?.text
+        // console.log('111name_class', name_class, '--', 'name_property', name_property)
 
         const decorators = ts.getDecorators ? ts.getDecorators(member) : (member.modifiers?.filter((m) => m.kind === ts.SyntaxKind.Decorator) as ts.Decorator[] | undefined)
         // console.log('decorators', decorators)
@@ -78,10 +64,12 @@ function main() {
           const expr = decorator.expression
           // console.log('expr', expr)
           if (!ts.isCallExpression(expr)) continue
-          // const keys_isIn = tool_parse_isIn(expr)
-          // console.log('tool_parse_isIn---keys', keys_isIn)
-          const keys_ApiProperty = tool_parse_ApiProperty(expr)
-          // console.log('tool_parse_ApiProperty---keys', keys_ApiProperty)
+          // const keys_isIn = parse_isIn(expr)
+          // console.log('parse_isIn---keys', keys_isIn)
+
+
+          const keys_ApiProperty = parse_ApiProperty(expr)
+          // console.log('parse_ApiProperty---keys', keys_ApiProperty)
 
         }
       }
@@ -92,43 +80,42 @@ function main() {
 
 
 
-
-// 解析ApiProperty装饰器
-function tool_parse_ApiProperty(expr: ts.CallExpression) {
-  if (!ts.isIdentifier(expr.expression) || expr.expression.text !== 'ApiProperty') return null
+function parse_ApiProperty(expr: ts.CallExpression) {
   const firstArg = expr.arguments[0]
+  const funcName = ts.isIdentifier(expr?.expression) ? expr?.expression.text : null
+  if (!(funcName === 'ApiProperty' && expr.arguments.length > 0)) return null
   if (!ts.isObjectLiteralExpression(firstArg)) return null
-
   let description: string | null = null
   let example: string | number | boolean | null = null
-
   firstArg.properties.forEach((prop) => {
     if (!ts.isPropertyAssignment(prop)) return
     const name = ts.isIdentifier(prop.name) ? prop.name.text : ts.isStringLiteral(prop.name) ? prop.name.text : null
-    if (name === 'description') description = String(inner_get_value(prop.initializer))
-    if (name === 'example') example = inner_get_value(prop.initializer)
+    // 解析description
+ 
+    // 解析example
+    if (name === 'example') {
+      example = prop.initializer.getText()
+      if (ts.isNumericLiteral(prop.initializer)) example = Number(prop.initializer.text)
+      if (ts.isStringLiteral(prop.initializer)) example = prop.initializer.text
+      if (prop.initializer.kind === ts.SyntaxKind.TrueKeyword) example = true
+      if (prop.initializer.kind === ts.SyntaxKind.FalseKeyword) example = false
+      // console.log('parse_ApiProperty---example', example)
+
+      
+    }
 
 
-
-
+    if (name === 'description') {
+      description = prop.initializer.getText()
+      // console.log('parse_ApiProperty---description', description)
+    }
+    console.log('parse_ApiProperty---name', { description, example })
+    if (!name) return
   })
-
-
-  function inner_get_value(node: ts.Expression) {
-    if (ts.isStringLiteral(node)) return node.text
-    if (ts.isNumericLiteral(node)) return Number(node.text)
-    if (node.kind === ts.SyntaxKind.TrueKeyword) return true
-    if (node.kind === ts.SyntaxKind.FalseKeyword) return false
-    return node.getText()
-  }
-
-  // console.log('ApiProperty', { description, example })
-  return { description, example }
 }
 
 
-// 解析isIn装饰器
-function tool_parse_isIn(expr: ts.CallExpression): any[] | null {
+function parse_isIn(expr: ts.CallExpression): any[] | null {
   const funcName = ts.isIdentifier(expr?.expression) ? expr?.expression.text : null
   if (!(funcName === 'IsIn' && expr.arguments.length > 0)) return null
   const firstArg = expr.arguments[0]
