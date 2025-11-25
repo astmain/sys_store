@@ -100,7 +100,6 @@ function parse_ApiProperty(expr: ts.CallExpression) {
 
 function parse_isIn(expr: ts.CallExpression): any[] | null {
   const funcName = ts.isIdentifier(expr?.expression) ? expr?.expression.text : null
-  console.log('parse_isIn---funcName', funcName)
   if (!(funcName === 'IsIn' && expr.arguments.length > 0)) return null
   const firstArg = expr.arguments[0]
   const keys: any[] = []
