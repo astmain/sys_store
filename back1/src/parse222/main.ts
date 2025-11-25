@@ -3,16 +3,22 @@ import * as ts from 'typescript'
 import * as path from 'path'
 import * as fs from 'fs'
 
+
+
 // ==================== 定义类型 ====================
 type infer_field_type = { field: string; type: string }
 type infer_IsIn = { field: string; values: unknown[]; message?: string; }
 type infer_ApiProperty = { field: string; description?: string; example?: unknown }
 
 // ==================== 读取文件 ====================
-const list_path_file = [
+let list_path_file = [
     'D:/BBB/sys_store/back1/src/v1/auth/dto/login_base.ts',
     'D:/BBB/sys_store/back1/src/v1/auth/dto/info_file.ts',
 ]
+
+
+list_path_file = tool_list_import_file(list_path_file)
+console.log('收集到的所有文件---list_path_file', list_path_file)
 
 
 let dto_obj = {} as any
@@ -40,7 +46,53 @@ if (list_source_file.length === 0) {
     throw new Error('No valid source files loaded.')
 }
 
+
+
+/**
+ * 从入口文件集合出发，递归解析所有相对 import，得到所有相关文件
+ */
+function tool_list_import_file(entryFiles: string[]): string[] {
+    const visited = new Set<string>()
+
+    function visit(filePath: string) {
+        const path_abs = path.resolve(filePath)// 绝对路径
+        if (visited.has(path_abs)) return
+        visited.add(path_abs)
+
+        if (!fs.existsSync(path_abs)) {
+            console.warn('文件不存在:', path_abs)
+            return
+        }
+
+        const code = fs.readFileSync(path_abs, 'utf8')
+        const sourceFile = ts.createSourceFile(path_abs, code, ts.ScriptTarget.ESNext, true)
+
+        // 遍历 AST，找 import 语句
+        sourceFile.forEachChild(node => {
+            if (ts.isImportDeclaration(node)) {
+                const moduleSpecifier = node.moduleSpecifier
+                if (ts.isStringLiteral(moduleSpecifier)) {
+                    const modulePath = moduleSpecifier.text // 比如 './info_file'   '@nestjs/swagger'   'class-validator'
+                    if (modulePath.startsWith('.')) {
+                        const path_base = path.dirname(path_abs)
+                        const path_import = path.resolve(path_base, modulePath + '.ts')//拼接文件路径
+                        // console.log('path_import', path_import)
+                        visit(path_import)
+                    }
+                }
+            }
+        })
+    }
+
+    entryFiles.forEach(visit)
+    return Array.from(visited)
+}
+
 // ==================== 工具函数:获取类名 ====================
+
+/**
+ * 获取类名
+ */
 function tool_list_class(sourceFile: ts.SourceFile): string[] {
     const list_class_name: string[] = []
 
@@ -55,13 +107,12 @@ function tool_list_class(sourceFile: ts.SourceFile): string[] {
     return list_class_name
 }
 
-// ==================== 工具函数:获取字段类型 ====================
-function tool_key_type(
-    sourceFile: ts.SourceFile,
-    className: string
-): infer_field_type[] {
-    const result: infer_field_type[] = []
 
+/**
+ * 获取字段类型
+ */
+function tool_key_type(sourceFile: ts.SourceFile, className: string): infer_field_type[] {
+    const result: infer_field_type[] = []
     function visit(node: ts.Node) {
         if (ts.isClassDeclaration(node) && node.name?.text === className) {
             node.members.forEach(member => {
@@ -83,7 +134,10 @@ function tool_key_type(
     return result
 }
 
-// ==================== 工具函数:解析ApiProperty得到描述和示例 ====================
+
+/**
+ * 解析ApiProperty得到描述和示例
+ */
 function tool_parse_ApiProperty(sourceFile: ts.SourceFile, className: string): infer_ApiProperty[] {
     const result: infer_ApiProperty[] = []
     function visit(node: ts.Node) {
@@ -162,9 +216,10 @@ function tool_parse_ApiProperty(sourceFile: ts.SourceFile, className: string): i
 }
 
 
-// ==================== 工具函数:解析IsIn得到 @IsIn(['个人', '企业', '国企', '私企'], { message: "分类:必须是-['个人', '企业','国企','私企']" })====================
-// ==================== 工具函数:解析IsIn得到 @IsIn([...], { message: "..." }) ====================
 
+/**
+ * 解析IsIn得到 @IsIn([...], { message: "..." })
+ */
 function tool_parse_IsIn(sourceFile: ts.SourceFile, className: string) {
     // const result: infer_IsIn[] = []
 
