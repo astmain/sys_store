@@ -21,7 +21,7 @@
     "axios": "^1.10.0",
     "back1": "workspace:*",
     "dayjs": "^1.11.13",
-    "element-plus": "^2.11.2",
+    "element-plus": "2.11.7",
     "jszip": "^3.10.1",
     "lodash-es": "^4.17.21",
     "marked": "^16.4.1",
