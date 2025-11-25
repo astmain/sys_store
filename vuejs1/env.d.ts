@@ -6,5 +6,13 @@ declare module "vue-drag-resize/src" {
   export default VueDragResize
 }
 
+import type { CSSProperties } from "vue"
 
-
+declare module "@vue/runtime-core" {
+  export interface GlobalComponents {
+    ElTable: {
+      style?: string | CSSProperties
+      [key: string]: any
+    } & import("vue").ComponentPublicInstance
+  }
+}
