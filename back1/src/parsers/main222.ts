@@ -48,11 +48,14 @@ function main() {
       // console.log('class_name', class_name)
     }
 
+
+
+
     node.members?.forEach((member) => {
       if (ts.isPropertyDeclaration(member) && member.name && ts.isIdentifier(member.name)) {
         const name_property = member.name.text
         const name_class = node.name?.text
-        console.log('111name_class', name_class, '--', 'name_property', name_property)
+        // console.log('111name_class', name_class, '--', 'name_property', name_property)
 
         const decorators = ts.getDecorators ? ts.getDecorators(member) : (member.modifiers?.filter((m) => m.kind === ts.SyntaxKind.Decorator) as ts.Decorator[] | undefined)
         // console.log('decorators', decorators)
@@ -61,14 +64,13 @@ function main() {
           const expr = decorator.expression
           // console.log('expr', expr)
           if (!ts.isCallExpression(expr)) continue
-          const funcName = ts.isIdentifier(expr?.expression) ? expr?.expression.text : null
-          // console.log('funcName', funcName)
-          if (funcName === 'IsIn' && expr.arguments.length > 0) {
-            const firstArg = expr.arguments[0]
-            // console.log('firstArg', firstArg)
-            const values = get_params_isIn(firstArg)
-            console.log('222values', values)
-          }
+          // const keys_isIn = parse_isIn(expr)
+          // console.log('parse_isIn---keys', keys_isIn)
+
+
+          const keys_ApiProperty = parse_ApiProperty(expr)
+          // console.log('parse_ApiProperty---keys', keys_ApiProperty)
+
         }
       }
     })
@@ -78,31 +80,38 @@ function main() {
 
 
 
-function get_params_isIn(firstArg: ts.Node): string[] {
-  const keys: string[] = []
+function parse_ApiProperty(expr: ts.CallExpression) {
+  const funcName = ts.isIdentifier(expr?.expression) ? expr?.expression.text : null
 
-  // 处理数组字面量表达式: ['a', 'b']
-  if (ts.isArrayLiteralExpression(firstArg)) {
-    firstArg.elements.forEach((element) => {
-      if (ts.isStringLiteral(element)) {
-        // 字符串字面量: 'a'
-        keys.push(element.text)
-      } else if (ts.isIdentifier(element)) {
-        // 标识符（变量名）
-        keys.push(element.text)
-      }
-    })
-  } else if (ts.isTupleTypeNode(firstArg)) {
-    // 处理元组类型: ['a', 'b']
-    firstArg.elements.forEach((element) => {
-      if (ts.isStringLiteral(element)) {
-        keys.push(element.text)
-      } else if (ts.isLiteralTypeNode(element) && ts.isStringLiteral(element.literal)) {
-        // 字面量类型节点
-        keys.push(element.literal.text)
-      }
-    })
-  }
+  if (!(funcName === 'ApiProperty' && expr.arguments.length > 0)) return null
+  const firstArg = expr.arguments[0]
+  ts.forEachChild(firstArg, (element) => {
+    console.log('parse_ApiProperty---element', element.getText())
+    // if (ts.isStringLiteral(element)) {
 
+    //   console.log('parse_ApiProperty---element', element.text)
+    // }
+    // if (ts.isNumericLiteral(element)) {
+    //   console.log('parse_ApiProperty---element', element.text)
+    // }
+  })
+}
+
+
+function parse_isIn(expr: ts.CallExpression): any[] | null {
+  const funcName = ts.isIdentifier(expr?.expression) ? expr?.expression.text : null
+  console.log('parse_isIn---funcName', funcName)
+  if (!(funcName === 'IsIn' && expr.arguments.length > 0)) return null
+  const firstArg = expr.arguments[0]
+  const keys: any[] = []
+  ts.forEachChild(firstArg, (element) => {
+    if (ts.isStringLiteral(element)) {
+      keys.push(element.text)
+    }
+    if (ts.isNumericLiteral(element)) {
+      keys.push(Number(element.getText()))
+    }
+  })
   return keys
 }
+
