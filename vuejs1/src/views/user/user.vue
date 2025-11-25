@@ -5,7 +5,7 @@
     </nav>
 
     <nav class="uno_card1 flex-1">
-      <el-table :data="list_user" style="width: 100%; height: 100%" show-overflow-tooltip stripe :header-cell-style="{ background: '#f4f4f5', color: '#606266' }">
+      <el-table    :data="list_user" :style="{ width: '100%', height: '100%' }" show-overflow-tooltip stripe :header-cell-style="{ background: '#f4f4f5', color: '#606266' }">
         <el-table-column prop="name" label="姓名" width="100" />
         <el-table-column prop="phone" label="手机号" width="200" />
         <el-table-column prop="gender" label="性别" width="100" />

@@ -1,6 +1,6 @@
 <template>
   <div class="env_control">
-    <VueDragResize  style="z-index: 999999;" :isActive="isActive" :x="BUS.control_button.left" :y="BUS.control_button.top" w="auto" h="auto" :sticks="[]" :isResizable="false" @dragging="dragging" @dragstop="dragstop" @activated="clickMessageBoard">
+    <VueDragResize style="z-index: 999999" :isActive="isActive" :x="BUS.control_button.left" :y="BUS.control_button.top" w="auto" h="auto" :sticks="[]" :isResizable="false" @dragging="dragging" @dragstop="dragstop" @activated="clickMessageBoard">
       <el-button type="primary">打开</el-button>
     </VueDragResize>
 
@@ -8,7 +8,7 @@
     <el-dialog v-model="dialogVisible" title="环境切换" width="650" :before-close="handleClose" draggable>
       <el-button type="primary" @click="clearEnvironmentVariable">清除环境变量</el-button>
 
-      <el-table :data="BUS.url_api_list" style="width: 100%" highlight-current-row>
+      <el-table :data="BUS.url_api_list" :style="{ width: '100%' }" highlight-current-row>
         <el-table-column label="状态" width="100">
           <template #default="{ row }">
             <el-button v-if="!(BUS.url_api_curr.url && row.name === BUS.url_api_curr.name)" size="small" @click="selectApi(row)"> 选择 </el-button>
@@ -24,9 +24,9 @@
 </template>
 
 <script setup lang="tsx">
-import { ref } from "vue"
-import { BUS } from "@/BUS"
-import VueDragResize from "vue-drag-resize/src"
+import { ref } from 'vue'
+import { BUS } from '@/BUS'
+import VueDragResize from 'vue-drag-resize/src'
 
 const clickMessageBoard = () => {
   setTimeout(() => {
