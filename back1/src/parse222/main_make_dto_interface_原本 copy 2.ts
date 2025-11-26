@@ -93,7 +93,7 @@ function make_desc_str() {
         const isInMap = dto.isIn || {}
 
         str += `export  interface ${key} {\n`
-        str_desc=""
+        str_desc = ""
 
 
         for (const f of fields) {
