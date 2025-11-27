@@ -1,0 +1,79 @@
+{
+  "login_base": {
+    "field": [
+      {
+        "field": "code",
+        "type": "string"
+      },
+      {
+        "field": "age",
+        "type": "number"
+      },
+      {
+        "field": "kind",
+        "type": "string"
+      },
+      {
+        "field": "list_main_img",
+        "type": "info_file[]"
+      }
+    ],
+    "ApiProperty": [
+      {
+        "field": "code",
+        "description": "验证码",
+        "example": "123456"
+      },
+      {
+        "field": "age",
+        "description": "年龄",
+        "example": 18
+      },
+      {
+        "field": "kind",
+        "description": "分类",
+        "example": "个人"
+      },
+      {
+        "field": "list_main_img",
+        "description": "列表-主图"
+      }
+    ],
+    "isIn": {
+      "kind": {
+        "list": [
+          "个人",
+          "企业",
+          "国企",
+          "私企"
+        ],
+        "message": "分类:必须是-['个人', '企业','国企','私企']"
+      }
+    }
+  },
+  "info_file": {
+    "field": [
+      {
+        "field": "url",
+        "type": "string"
+      },
+      {
+        "field": "file_name",
+        "type": "string"
+      }
+    ],
+    "ApiProperty": [
+      {
+        "field": "url",
+        "description": "url",
+        "example": "https://www.baidu.com/img/flexible/logo/pc/result.png"
+      },
+      {
+        "field": "file_name",
+        "description": "文件名称",
+        "example": "result.png"
+      }
+    ],
+    "isIn": {}
+  }
+}

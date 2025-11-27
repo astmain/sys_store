@@ -32,20 +32,20 @@ export class arg_data {
   is_plugin_remark: string
 }
 
-export class login_phone {
-  @ApiProperty({ description: '验证码', example: '123456' })
-  @IsIn(['个人', '企业', '国企', '私企'], { message: "分类:必须是-['个人', '企业','国企','私企']" })
-  code: string
+// export class login_phone {
+//   @ApiProperty({ description: '验证码', example: '123456' })
+//   @IsIn(['个人', '企业', '国企', '私企'], { message: "分类:必须是-['个人', '企业','国企','私企']" })
+//   code: string
 
-  @ApiProperty({ description: '(参数-商品模型)' })
-  @ValidateNested()
-  @Type(() => arg_data)
-  arg_product_model: arg_data
+//   @ApiProperty({ description: '(参数-商品模型)' })
+//   @ValidateNested()
+//   @Type(() => arg_data)
+//   arg_product_model: arg_data
 
 
-  @ApiProperty({ description: '手机号', example: '13800138000' })
-  @IsArray()
-  @IsString({ each: true })
-  @MinLength(1, { message: 'list_phone-至少需要一个元素' })
-  list_phone: string[]
-}
+//   @ApiProperty({ description: '手机号', example: '13800138000' })
+//   @IsArray()
+//   @IsString({ each: true })
+//   @MinLength(1, { message: 'list_phone-至少需要一个元素' })
+//   list_phone: string[]
+// }
