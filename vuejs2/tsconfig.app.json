@@ -26,7 +26,7 @@
     "erasableSyntaxOnly": true, //仅允许可删除的语法
     "noFallthroughCasesInSwitch": true, //报告switch语句中遗漏的break语句
     "noUncheckedSideEffectImports": true, //禁止导入具有副作用的模块，除非它们被使用
-    "suppressExcessPropertyErrors": true //允许对象字面量中的额外属性，放宽对组件 props 的类型检查
+    // "suppressExcessPropertyErrors": true //允许对象字面量中的额外属性，放宽对组件 props 的类型检查
     // "strictFunctionTypes": false, //关闭函数参数类型检查
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "env.d.ts"]
