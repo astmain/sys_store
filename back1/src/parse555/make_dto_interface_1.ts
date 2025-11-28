@@ -82,25 +82,29 @@ let dto_obj = {
         "isIn": {}
     }
 }
-const path_file_write = 'D:/BBB/sys_store/back1/src/parse555/dto_interface.ts'
+
 
 
 let my_remark = `
 /**
 * @example :
 * my_replace_tsts
-my_replace_code
+* let my_replace_class_name = {
+my_replace_code}
 * my_replace_ts
 */
 `.replace(/my_replace_ts/g, "```")
+
+const path_file_write = 'D:/BBB/sys_store/back1/src/parse555/dto_interface.ts'
 make_dto_interface_1({ dto_obj, path_file_write })
+
 export function make_dto_interface_1({ dto_obj, path_file_write }: { dto_obj: any, path_file_write: string }) {
 
     let str_all = ''
     for (const key in dto_obj) {
         let str_one = ''
         const dto_one = dto_obj[key]
-        console.log('dto_one', dto_one)
+        console.log('dto_one---',key, dto_one)
         str_one += `export  interface ${key} {\n`
         for (let i = 0; i < dto_one.field.length; i++) {
             const f = dto_one.field[i]
@@ -110,20 +114,40 @@ export function make_dto_interface_1({ dto_obj, path_file_write }: { dto_obj: an
 
                 let str_remake = ''
                 for (let i = 0; i < dto_one.ApiProperty.length; i++) {
-                    // const item = dto_one.ApiProperty[i]
-                    // str_remake += ` ${item.field}: ${item.type};\n`
-                    console.log('dto_one.ApiProperty[i]', dto_one.ApiProperty[i])
+                    const item = dto_one.ApiProperty[i]
+                    // console.log('item', item)
+                    const field_type = dto_one.field.find(f => f.field === item.field)?.type //获取dto_one.field中对应的类型  ,item.field 是字段名称
+                    // console.log('field_type', field_type)
 
-                    // {
-                    //     "field": "code",
-                    //     "description": "验证码",
-                    //     "example": "123456"
-                    //   },
+                    let example_value: any
+
+               
+                     if (field_type === "string") {
+                        example_value = `"${item.example}"`
+                    } else if (field_type === "number") {
+                        example_value = item.example
+                    } else if (field_type === "boolean") {
+                        example_value = item.example
+                    } else if (field_type === "array") {
+                        example_value = item.example
+                    } else if (field_type === "object") {
+                        example_value = item.example
+                    } else {
+                        // console.log('特殊自定义类型---field_type', field_type)
+                        example_value = field_type
+                    }
+
+                    if (dto_one.isIn[item.field]) {
+                        item.description =      item.description +  dto_one.isIn[item.field].list.join('|')
+                    }
+                    str_remake += ` ${item.field}: ${example_value};  //[${item.description}] \n`
+                    dto_one.ApiProperty[i].description
                 }
-                // console.log('str_remake', str_remake)
 
-                //                            //替换代码                     删除空白行
-                my_remark = my_remark.replace(/my_replace_code/g, str_one).replace(/^\s*\r?\n/gm, '')
+                //                                
+                str_remake = my_remark.replace(/my_replace_code/g, str_remake)   //替换代码        
+                str_remake = str_remake.replace(/^\s*\r?\n/gm, '')      //删除空白行
+                str_one = str_one.replace(/^/, str_remake); // /^/ 字第一个位置,增加备注
 
             }
         }
