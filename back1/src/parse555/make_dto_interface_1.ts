@@ -104,7 +104,7 @@ export function make_dto_interface_1({ dto_obj, path_file_write }: { dto_obj: an
     for (const key in dto_obj) {
         let str_one = ''
         const dto_one = dto_obj[key]
-        console.log('dto_one---',key, dto_one)
+        console.log('dto_one---', key, dto_one)
         str_one += `export  interface ${key} {\n`
         for (let i = 0; i < dto_one.field.length; i++) {
             const f = dto_one.field[i]
@@ -121,8 +121,8 @@ export function make_dto_interface_1({ dto_obj, path_file_write }: { dto_obj: an
 
                     let example_value: any
 
-               
-                     if (field_type === "string") {
+
+                    if (field_type === "string") {
                         example_value = `"${item.example}"`
                     } else if (field_type === "number") {
                         example_value = item.example
@@ -137,15 +137,19 @@ export function make_dto_interface_1({ dto_obj, path_file_write }: { dto_obj: an
                         example_value = field_type
                     }
 
+
+
+                    // 处理装饰器@IsIn
                     if (dto_one.isIn[item.field]) {
-                        item.description =      item.description +  dto_one.isIn[item.field].list.join('|')
+                        item.description = item.description + dto_one.isIn[item.field].list.join('|')
                     }
                     str_remake += ` ${item.field}: ${example_value};  //[${item.description}] \n`
                     dto_one.ApiProperty[i].description
                 }
 
                 //                                
-                str_remake = my_remark.replace(/my_replace_code/g, str_remake)   //替换代码        
+                str_remake = my_remark.replace(/my_replace_code/g, str_remake)  //替换代码        
+                str_remake = my_remark.replace(/my_replace_class_name/g, key)   //替换代码        
                 str_remake = str_remake.replace(/^\s*\r?\n/gm, '')      //删除空白行
                 str_one = str_one.replace(/^/, str_remake); // /^/ 字第一个位置,增加备注
 

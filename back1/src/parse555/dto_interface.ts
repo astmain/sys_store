@@ -1,12 +1,8 @@
 /**
 * @example :
 * ```ts
-* let my_replace_class_name = {
- code: "123456";  //[验证码] 
- age: 18;  //[年龄] 
- kind: "个人";  //[分类个人,企业,国企,私企] 
- list_main_img: info_file[];  //[列表-主图] 
-}
+* let login_base = {
+my_replace_code}
 * ```
 */
 export  interface login_base {
@@ -19,10 +15,8 @@ export  interface login_base {
 /**
 * @example :
 * ```ts
-* let my_replace_class_name = {
- url: "https://www.baidu.com/img/flexible/logo/pc/result.png";  //[url] 
- file_name: "result.png";  //[文件名称] 
-}
+* let info_file = {
+my_replace_code}
 * ```
 */
 export  interface info_file {

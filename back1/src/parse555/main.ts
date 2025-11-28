@@ -7,9 +7,9 @@ const list_path_file = tool_list_import_file([
 ])
 // console.log('关联的所有文件---list_path_file', list_path_file)
 
-let dto_obj = make_dto_obj({ list_path_file, path_file_write: 'D:/BBB/sys_store/back1/src/parse444/dto_obj.json' })
+let dto_obj = make_dto_obj({ list_path_file, path_file_write: 'D:/BBB/sys_store/back1/src/parse555/dto_obj.json' })
 // console.log('解析后的数据---dto_obj', JSON.stringify(dto_obj, null, 2))
 
 
-let str_all = make_dto_interface_1({ dto_obj, path_file_write: 'D:/BBB/sys_store/back1/src/parse444/dto_interface.ts' })
+let str_all = make_dto_interface_1({ dto_obj, path_file_write: 'D:/BBB/sys_store/back1/src/parse555/dto_interface.ts' })
 console.log('生成的字符串---str_all', str_all)
